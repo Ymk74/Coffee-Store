@@ -8,3 +8,8 @@ def products(request):
 def product(request):
     return render(request , 'product.html')
     
+
+    
+def search(request):
+    return render(request , 'search.html')
+    
