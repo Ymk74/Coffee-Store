@@ -22,3 +22,5 @@ def about(request):
 
 def coffee(request):
     return render(request , 'pages/coffee.html')
+
+
