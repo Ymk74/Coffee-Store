@@ -4,8 +4,16 @@ from .models import Product
 
 # Create your views here.
 def products(request):
+    pro = Product.objects.all()
+
+    name = None
+    if 'search_name' in request.GET:
+        name = request.GET['search_name']
+    if name :
+        pro = pro.filter(name__icontains=name)
     items = {
-        'products' : Product.objects.all()
+        'products' : pro,
+        'name' : name
     }
     return render(request , 'products.html' ,items)
     
