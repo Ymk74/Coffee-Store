@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render , get_object_or_404
 from datetime import datetime
 from .models import Product
 
@@ -10,8 +10,11 @@ def products(request):
     return render(request , 'products.html' ,items)
     
 
-def product(request):
-    return render(request , 'product.html')
+def product(request,id):
+    context = {
+        'pro' :get_object_or_404(Product,pk=id)
+    }
+    return render(request , 'product.html',context)
     
 
     
