@@ -3,7 +3,8 @@
 {% block content %}
 
 <div class="my-form container p-5 my-5 rounded border border-warning">
-    <form>
+    <form method="POST">
+        {% csrf_token %}
         <h2 class="text-center">Sign In</h2>
         
 {% include 'parts/alerts.html' %}
