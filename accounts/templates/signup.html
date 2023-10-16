@@ -5,9 +5,12 @@
 
 
 <div class="my-form container p-5 my-5 rounded border border-warning">
-    <form>
+    <form method="POST" >
+        {% csrf_token %}
         <h2 class="text-center">Sign Up</h2>
-        <hr>
+
+        {% include 'parts/alerts.html' %}
+
 
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -44,7 +47,7 @@
         </div>
         <div class="form-group">
             <label for="inputEmail">Email</label>
-            <input type="email" class="form-control" name="email" id="inputEmail" placeholder="name@example.com" required>
+            <input type="email" name="email" class="form-control"  id="inputEmail" placeholder="name@example.com" required>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -53,7 +56,7 @@
             </div>
             <div class="form-group col-md-6">
                 <label for="inputPassword">Password</label>
-                <input type="password" class="form-control" name="password" id="inputPassword" required>
+                <input type="password" name="password" class="form-control"  id="inputPassword" required>
             </div>
         </div>
         <div class="form-group">
