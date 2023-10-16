@@ -7,13 +7,32 @@ def products(request):
     pro = Product.objects.all()
 
     name = None
+    description =None
+    pfrom = None
+    pto = None
+
     if 'search_name' in request.GET:
         name = request.GET['search_name']
-    if name :
-        pro = pro.filter(name__icontains=name)
+        if name :
+            pro = pro.filter(name__icontains=name)
+
+    if 'search_description' in request.GET:
+        description = request.GET['search_description']
+        if description :
+            pro = pro.filter(description__icontains=description)
+        
+    if 'search_price_from' in request.GET and 'search_price_to' in request.GET :
+        pfrom = request.GET['search_price_from']
+        pto = request.GET['search_price_to']
+        if pfrom and pto :
+            if  pfrom.isdigit() and pto.isdigit():
+                pro = pro.filter( price__gte=pfrom , price__lte=pto )
+                
+
     items = {
         'products' : pro,
-        'name' : name
+        'name' : name ,
+        'description' : description ,
     }
     return render(request , 'products.html' ,items)
     
