@@ -8,7 +8,10 @@ import re
 
 def signin(request):
     if request.method == 'POST' and 'btn_login' in request.POST:
-        messages.info(request,'test and btn_login')
+
+        username = request.POST['user']
+        
+
         return redirect('signin')
     else:
         return render(request , 'signin.html')
@@ -29,6 +32,7 @@ def signup(request):
         username = None
         password = None
         terms = None
+        is_added = None
 
         #Get Values From The Form
         if 'first_name' in request.POST : first_name = request.POST['first_name']
@@ -82,8 +86,21 @@ def signup(request):
                             # add user profile
                             userprofile = UserProfile(user=user,address=address,address2=address2,city=city,state=state,zip_number=zip_number)
                             userprofile.save()
+                            #clear fields
+                            first_name = ''
+                            last_name = ''
+                            address = ''
+                            address2 = ''
+                            city = ''
+                            state = ''
+                            zip_number = ''
+                            username = ''
+                            password = ''
+                            email = ''
+                            terms = None
                             #Success Message
                             messages.success(request , 'Your Is Created Successfully')
+                            is_added = True
                         else :
                             messages.error(request,'Invalid Email')
 
@@ -95,7 +112,19 @@ def signup(request):
         else :
             messages.error(request,'Check Empty Fields')
 
-        return redirect('signup')
+        return render(request , 'signup.html',{
+            'first_name': first_name , 
+            'last_name': last_name , 
+            'address': address , 
+            'address2': address2 , 
+            'city': city , 
+            'zip_number': zip_number , 
+            'state': state , 
+            'email': email , 
+            'username': username , 
+            'password': password ,
+            'is_added' : is_added
+        })
     else:
         return render(request , 'signup.html')
     
