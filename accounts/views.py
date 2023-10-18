@@ -1,6 +1,7 @@
 from django.shortcuts import render , redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib import auth
 from .models import UserProfile
 import re
 # Create your views here.
@@ -10,7 +11,15 @@ def signin(request):
     if request.method == 'POST' and 'btn_login' in request.POST:
 
         username = request.POST['user']
-        
+        password = request.POST['password']
+
+        user = auth.authenticate(username=username , password=password)
+
+        if user is not None :
+            auth.login(request,user)
+            messages.success(request, 'you are successfully logged in')
+        else :
+            messages.error(request, 'Username Or Password Invalid')
 
         return redirect('signin')
     else:

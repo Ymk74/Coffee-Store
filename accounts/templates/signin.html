@@ -3,9 +3,16 @@
 {% block content %}
 
 <div class="my-form container p-5 my-5 rounded border border-warning">
+    <h2 class="text-center">Sign In</h2>
+
+    {% if request.user.is_authenticated  %}
+    <h4 class="alert alert-warning">
+        Welcome, {{request.user.username}} , Now You Are Logged In
+    </h4>
+
+    {% endif %}
     <form method="POST">
         {% csrf_token %}
-        <h2 class="text-center">Sign In</h2>
         
 {% include 'parts/alerts.html' %}
         <div class="form-group">
