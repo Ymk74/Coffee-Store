@@ -30,7 +30,11 @@
             {% endif %}
             >
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if request.user.is_authenticated %}
+                Welcome
+                {% else %}
                 Join us
+                {% endif %}
                 </a>
                 <div class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="{% url 'signin' %}">Sign in</a>
@@ -83,9 +87,9 @@
 
             </ul>
             {% if request.user.is_authenticated %}
-            <span>
-                Welcome , {{request.user.username}}.
-            </span class="text-light" style="margin-right:5px">
+            {% comment %} <span>
+                Welcome , {{request.user.username}}
+            </span class="text-light" style="margin-right:5px"> {% endcomment %}
             {% endif %}
             <form action="{% url 'products' %}" class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2 remove-outline" name = 'search_name'  type="search" placeholder="Search" aria-label="Search">
