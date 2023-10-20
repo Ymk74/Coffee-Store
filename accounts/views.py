@@ -6,24 +6,32 @@ from .models import UserProfile
 import re
 # Create your views here.
 
-
 def signin(request):
-    if request.method == 'POST' and 'btn_login' in request.POST:
 
+    if request.method == 'POST' and 'btn_login' in request.POST:
         username = request.POST['user']
         password = request.POST['password']
-
         user = auth.authenticate(username=username , password=password)
-
         if user is not None :
+            if 'remember_me' not in request.POST:
+                request.session.set_expiry(0)
             auth.login(request,user)
-            messages.success(request, 'you are successfully logged in')
+            # messages.success(request, 'you are successfully logged in')
         else :
             messages.error(request, 'Username Or Password Invalid')
-
         return redirect('signin')
     else:
         return render(request , 'signin.html')
+
+
+
+def logout(request):
+
+    if request.user.is_authenticated :
+        auth.logout(request)
+    return redirect('index')
+
+
 
 
 def signup(request):
@@ -89,12 +97,15 @@ def signup(request):
                     else :
                         patt = "^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"
                         if re.match(patt , email):
+
                             # add user
                             user = User.objects.create_user(first_name=first_name,last_name=last_name,email=email,username=username,password=password)
                             user.save()
+
                             # add user profile
                             userprofile = UserProfile(user=user,address=address,address2=address2,city=city,state=state,zip_number=zip_number)
                             userprofile.save()
+
                             #clear fields
                             first_name = ''
                             last_name = ''
@@ -107,21 +118,20 @@ def signup(request):
                             password = ''
                             email = ''
                             terms = None
+
                             #Success Message
                             messages.success(request , 'Your Is Created Successfully')
                             is_added = True
                         else :
                             messages.error(request,'Invalid Email')
 
-
-
             else : 
                 messages.error(request,'You Must Agree The Terms')
 
         else :
             messages.error(request,'Check Empty Fields')
-
         return render(request , 'signup.html',{
+
             'first_name': first_name , 
             'last_name': last_name , 
             'address': address , 
@@ -139,10 +149,61 @@ def signup(request):
     
 
 
+
 def profile(request):
+
     if request.method == 'POST' and 'btn_save' in request.POST:
-        messages.info(request,'test and btn_save')
+
+        if request.user is not None and request.user.id != None:
+            userprofile = UserProfile.objects.get(user=request.user)
+
+            if request.POST.get('first_name') and request.POST.get('last_name') and request.POST.get('address') and request.POST.get('address2') and request.POST.get('email') and request.POST.get('city') and request.POST.get('state') and request.POST.get('password') and request.POST.get('username') and request.POST.get('zip_number'):
+            # if request.POST['first_name'] and request.POST['last_name'] and request.POST['address'] and request.POST['address2'] and request.POST['email'] and request.POST['city'] and request.POST['state'] and request.POST['password'] and request.POST['username'] and request.POST['zip_number']  :
+                request.user.first_name = request.POST['first_name']
+                request.user.last_name = request.POST['last_name']
+                userprofile.address = request.POST['address']
+                userprofile.address2 = request.POST['address2']
+                userprofile.city = request.POST['city']
+                userprofile.state = request.POST['state']
+                userprofile.zip_number = request.POST['zip_number']
+                # request.user.username = request.POST['username']
+                # request.user.email = request.POST['email']
+                if request.POST['password'].startswith('pbkdf2_sha256$'):
+                    request.user.set_password(request.POST['password'])
+                request.user.save()
+                userprofile.save()
+                # auth.login(request,request.user)
+                messages.success(request,'Your Date Has Been Saved')
+
+
+
+            else :
+                messages.error(request,'check your values')
         return redirect('profile')
     else:
-        return render(request , 'profile.html')
+
+        
+        if request.user is not None:
+
+            context = None
+            if not request.user.is_anonymous:
+
+
+                userprofile = UserProfile.objects.get(user=request.user)
+                context ={
+                    'first_name' : request.user.first_name,
+                    'last_name' : request.user.last_name,
+                    'address' : userprofile.address,
+                    'address2' : userprofile.address2,
+                    'city' : userprofile.city,
+                    'state' : userprofile.state,
+                    'zip_number' : userprofile.zip_number,
+                    'email' : request.user.email,
+                    'username' : request.user.username,
+                    'password' : request.user.password,
+                    
+                }
+            return render(request , 'profile.html',context)
+        else :
+            return redirect('profile')
     

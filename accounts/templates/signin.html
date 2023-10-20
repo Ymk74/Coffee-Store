@@ -7,7 +7,10 @@
 
     {% if request.user.is_authenticated  %}
     <h4 class="alert alert-warning">
-        Welcome, {{request.user.username}} , Now You Are Logged In
+        Welcome, {{request.user.username}} , Now You Are Logged In , 
+        <a class="text-dark" href="{% url 'logout' %}">
+            Logout
+        </a>
     </h4>
     {% else %}
     <form method="POST">
@@ -25,7 +28,7 @@
 
         <div class="form-group">
             <div class="pretty p-svg p-curve p-jelly">
-                <input type="checkbox" name="remember_me" id="inputTerms" />
+                <input type="checkbox" checked name="remember_me" id="inputTerms" />
                 <div class="state p-warning">
                     <!-- svg path -->
                     <svg class="svg svg-icon" viewBox="0 0 20 20">
