@@ -168,14 +168,12 @@ def profile(request):
                 userprofile.zip_number = request.POST['zip_number']
                 # request.user.username = request.POST['username']
                 # request.user.email = request.POST['email']
-                if request.POST['password'].startswith('pbkdf2_sha256$'):
+                if not request.POST['password'].startswith('pbkdf2_sha256$600000$'):
                     request.user.set_password(request.POST['password'])
                 request.user.save()
                 userprofile.save()
                 # auth.login(request,request.user)
                 messages.success(request,'Your Date Has Been Saved')
-
-
 
             else :
                 messages.error(request,'check your values')
