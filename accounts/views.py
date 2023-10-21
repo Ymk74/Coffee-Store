@@ -3,7 +3,10 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib import auth
 from .models import UserProfile
+from products.models import Product
 import re
+
+
 # Create your views here.
 
 def signin(request):
@@ -205,3 +208,28 @@ def profile(request):
         else :
             return redirect('profile')
     
+
+
+def fav_product(request,id):
+    if request.user.is_authenticated and not request.user.is_anonymous :
+        fav_product = Product.objects.get(pk=id)
+        if UserProfile.objects.filter(user=request.user,fav_product=fav_product).exists():
+            messages.success(request, 'Already Added')
+
+        else :
+            userprofile = UserProfile.objects.get(user=request.user)
+            userprofile.fav_product.add(fav_product)
+            messages.success(request,'product added to fav')
+
+    else :
+        messages.error(request,'you must be log in')
+    return redirect('/products/' + str(id))
+
+
+def show_fav_product(request):
+    context = None
+    if request.user.is_authenticated and not request.user.is_anonymous :
+        userinfo = UserProfile.objects.get(user=request.user)
+        pro = userinfo.fav_product.all()
+        context = { 'products' : pro }
+    return render(request, 'products\products.html' ,context)

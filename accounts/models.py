@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from products.models import Product
 # Create your models here.
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
+    fav_product = models.ManyToManyField(Product)
     address = models.CharField(max_length=60)
     address2 = models.CharField(max_length=60)
     city = models.CharField(max_length=60)
