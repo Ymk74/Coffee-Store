@@ -5,7 +5,8 @@ from django.contrib import auth
 from .models import UserProfile
 from products.models import Product
 import re
-
+from django.template import TemplateDoesNotExist
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -229,7 +230,7 @@ def fav_product(request,id):
 def show_fav_product(request):
     context = None
     if request.user.is_authenticated and not request.user.is_anonymous :
-        userinfo = UserProfile.objects.get(user=request.user)
-        pro = userinfo.fav_product.all()
+        user_info = UserProfile.objects.get(user=request.user)
+        pro = user_info.fav_product.all()
         context = { 'products' : pro }
-    return render(request, 'products\products.html' ,context)
+    return render(request, 'products.html' ,context)
